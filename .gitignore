@@ -1,0 +1,47 @@
+# Build
+build/
+.gradle/
+out/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Gradle (gradle-wrapper.properties и jar обычно коммитят)
+
+# Local config
+local.properties
+*.iml
+
+# IDE
+.idea/
+*.ipr
+*.iws
+.nb-gradle/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs & temp
+*.log
+*.tmp
+*.temp
+*.swp
+*~
+
+# Keystore (не коммитить ключи подписи)
+*.jks
+*.keystore
+
+# Android Studio
+/captures
+.externalNativeBuild
+.cxx/
+
+# Kotlin
+*.class
+
+# Test
+/test-results/
+/connected-test-results/
