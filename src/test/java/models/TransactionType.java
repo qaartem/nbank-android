@@ -3,5 +3,6 @@ package models;
 public enum TransactionType {
     DEPOSIT,
     WITHDRAWAL,
-    TRANSFER
+    TRANSFER,
+    TRANSFER_OUT
 }
