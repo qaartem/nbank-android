@@ -7,6 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codeborne.selenide.Selenide;
+
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
@@ -63,5 +65,11 @@ public class DepositPage {
     public DepositPage checkAlertMessageAndAmountAndAccountNumberAccept(String expectedMessage, float amount, String accountNumber) {
         $(MobileBy.xpath(ALERT_MESSAGE)).should(Condition.visible);
         return this;
+    }
+
+    @Step("Return to dashboard")
+    public pages.UserDashboardPage returnToDashboard() {
+        Selenide.back();
+        return new UserDashboardPage();
     }
 }
