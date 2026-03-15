@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+}
+
+group = 'nbank-android-awesome-tests'
+version = '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = '5.8.2'
+    restAssuredVersion = '5.4.0'
+    allureVersion = '2.19.0'
+    seleniumVersion = '4.13.0'
+    selenideVersion = '6.19.0'
+    appiumVersion = '8.6.0'
+    lombokVersion = '1.18.38'
+    assertjVersion = '3.26.3'
+}
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "io.rest-assured:rest-assured:$restAssuredVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "io.qameta.allure:allure-junit5:$allureVersion"
+    testImplementation "io.qameta.allure:allure-selenide:$allureVersion"
+
+    testImplementation "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
+    testImplementation "com.codeborne:selenide:$selenideVersion"
+    testImplementation "io.appium:java-client:$appiumVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.18.2"
+}
+
+test {
+    useJUnitPlatform()
+
+//    testLogging {
+//        events "passed", "skipped", "failed"
+//        exceptionFormat "full"
+//        showStandardStreams = true
+//    }
+}

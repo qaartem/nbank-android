@@ -45,3 +45,7 @@ Thumbs.db
 # Test
 /test-results/
 /connected-test-results/
+
+# Allure
+allure-results/
+allure-report/
