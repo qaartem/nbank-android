@@ -1,19 +1,5 @@
 package tests;
 
-/**
- * Соответствие веб-тесту checkThatUserCanDepositMoney:
- * — @UserSession → логин через LoginPage (TEST_USER) + UserDashboardPage.checkDashboardLoaded().
- * — SessionStorage.getSteps().createAccount() → AccountApiHelper.createAccount().
- * — new UserDashboard().open().depositMoney() → Login → UserDashboardPage.depositMoney().
- * — getPage(DepositPage.class).depositMoney(...) → DepositPage.depositMoney(accountNumber, amount).
- * — checkAlertMessageAndAmountAndAccountNumberAccept → DepositPage.checkAlertMessageAndAmountAndAccountNumberAccept(...).
- * — SessionStorage.getSteps().getAccountWithSpecificNumber(...) → AccountApiHelper.getAccountWithSpecificNumber(...).
- *
- * Что нужно подставить под ваше приложение:
- * 1. В config.properties — логин/пароль TEST_USER (или создавать пользователя в @BeforeEach через админку).
- * 2. В AccountApiHelper — реальные пути API создания счёта и получения счёта по номеру.
- * 3. В UserDashboardPage и DepositPage — реальные XPath из uiautomator dump экранов пользователя и депозита.
- */
 import helpers.AccountApiHelper;
 import helpers.UserApiHelper;
 import models.CreateAccountResponse;
@@ -44,10 +30,6 @@ public class BankTests extends BaseTest {
                 .checkAdminPanelLoaded();
     }
 
-    /**
-     * Мобильный аналог веб-теста checkThatUserCanDepositMoney:
-     * админ создаёт пользователя → пользователь создаёт счёт → логин в UI → депозит → проверка через API.
-     */
     @Test
     @DisplayName("User can deposit money")
     void checkThatUserCanDepositMoney() {
@@ -65,15 +47,17 @@ public class BankTests extends BaseTest {
                 .clickLoginButtonAndOpenUserDashboard()
                 .checkDashboardLoaded()
                 .depositMoney()
-                .depositMoney(newAccount.getAccountNumber(), amount)
+                .depositMoney(newAccount.getId(), newAccount.getAccountNumber(), amount)
                 .checkAlertMessageAndAmountAndAccountNumberAccept(
                         "Successfully deposited",
                         amount,
                         newAccount.getAccountNumber()
                 );
 
-        GetAccountDetailsResponse accountDetails =
-                AccountApiHelper.getAccountWithSpecificNumber(newAccount.getAccountNumber(), username, password);
+        GetAccountDetailsResponse accountDetails = AccountApiHelper.getCustomerAccounts(username, password).stream()
+                .filter(a -> newAccount.getAccountNumber().equals(a.getAccountNumber()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Account not found: " + newAccount.getAccountNumber()));
 
         assertThat(accountDetails.getAccountNumber())
                 .isEqualTo(newAccount.getAccountNumber());
