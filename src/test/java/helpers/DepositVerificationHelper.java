@@ -3,15 +3,12 @@ package helpers;
 import models.GetAccountDetailsResponse;
 import models.Transaction;
 import models.TransactionType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public final class DepositVerificationHelper {
-    private static final Logger log = LoggerFactory.getLogger(DepositVerificationHelper.class);
 
     private DepositVerificationHelper() {
     }
@@ -23,7 +20,6 @@ public final class DepositVerificationHelper {
             Float initialBalance,
             long depositAmount
     ) {
-        log.info("Verifying deposit: accountNumber={}, expectedAmount={}, initialBalance={}", accountNumber, depositAmount, initialBalance);
         List<GetAccountDetailsResponse> accounts = AccountApiHelper.getCustomerAccounts(username, password);
 
         assertThat(accounts)
@@ -52,6 +48,5 @@ public final class DepositVerificationHelper {
         assertThat(accountDetails.getBalance())
                 .as("Balance should equal initial + deposit amount")
                 .isEqualTo(expectedBalance);
-        log.info("Deposit verification passed: balance={}", accountDetails.getBalance());
     }
 }

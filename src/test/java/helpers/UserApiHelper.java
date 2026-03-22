@@ -3,15 +3,12 @@ package helpers;
 import static io.qameta.allure.Allure.step;
 import models.CreateUserRequest;
 import org.apache.http.HttpStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import config.Config;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 public class UserApiHelper {
-    private static final Logger log = LoggerFactory.getLogger(UserApiHelper.class);
 
     private static String baseUri() {
         return Config.getProperty("backend.url");
@@ -22,7 +19,6 @@ public class UserApiHelper {
     }
 
     public static CreateUserRequest createUser(CreateUserRequest userRequest) {
-        log.info("Creating user via API: username={}", userRequest.getUsername());
         return step("Admin creates user " + userRequest.getUsername(), () -> {
             RestAssured.given()
                     .baseUri(baseUri())
@@ -36,7 +32,6 @@ public class UserApiHelper {
                     .then()
                     .log().ifValidationFails()
                     .statusCode(HttpStatus.SC_CREATED);
-            log.debug("User created: {}", userRequest.getUsername());
             return userRequest;
         });
     }

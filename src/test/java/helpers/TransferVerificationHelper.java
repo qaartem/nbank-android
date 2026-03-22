@@ -3,8 +3,6 @@ package helpers;
 import models.GetAccountDetailsResponse;
 import models.Transaction;
 import models.TransactionType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,7 +10,6 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public final class TransferVerificationHelper {
-    private static final Logger log = LoggerFactory.getLogger(TransferVerificationHelper.class);
 
     private TransferVerificationHelper() {
     }
@@ -27,9 +24,6 @@ public final class TransferVerificationHelper {
             float initialSenderBalance,
             float transferAmount
     ) {
-        log.info("Verifying transfer: senderAcc={}, receiverAcc={}, transferAmount={}, initialSenderBalance={}",
-                senderAccountNumber, receiverAccountNumber, transferAmount, initialSenderBalance);
-
         List<GetAccountDetailsResponse> senderAccounts = AccountApiHelper.getCustomerAccounts(senderUsername, senderPassword);
         GetAccountDetailsResponse senderAccount = findAccount(senderAccounts, senderAccountNumber);
         float expectedSenderBalance = initialSenderBalance - transferAmount;
@@ -62,8 +56,6 @@ public final class TransferVerificationHelper {
         assertThat(amountMatches(newestSenderTx.getAmount(), transferAmount))
                 .as("Newest sender transaction amount should equal transfer amount")
                 .isTrue();
-        log.debug("Newest sender transaction: type={}, amount={}, id={}", newestSenderTx.getType(),
-                newestSenderTx.getAmount(), newestSenderTx.getId());
 
         List<Transaction> receiverNewestFirst = TransactionListHelper.newestFirst(receiverAccount.getTransactions());
         assertThat(receiverNewestFirst)
@@ -80,11 +72,6 @@ public final class TransferVerificationHelper {
         assertThat(amountMatches(newestReceiverTx.getAmount(), transferAmount))
                 .as("Newest receiver transaction amount should equal transfer amount")
                 .isTrue();
-        log.debug("Newest receiver transaction: type={}, amount={}, id={}", newestReceiverTx.getType(),
-                newestReceiverTx.getAmount(), newestReceiverTx.getId());
-
-        log.info("Transfer verification passed: senderBalance={}, receiverBalance={}",
-                senderAccount.getBalance(), receiverAccount.getBalance());
     }
 
     private static GetAccountDetailsResponse findAccount(List<GetAccountDetailsResponse> accounts, String accountNumber) {
@@ -102,9 +89,6 @@ public final class TransferVerificationHelper {
                 || Objects.equals(type, TransactionType.TRANSFER_OUT.toString());
     }
 
-    /**
-     * На стороне получателя backend может отдавать TRANSFER, TRANSFER_IN или (редко) DEPOSIT для зачисления.
-     */
     private static boolean isIncomingTransferType(String type) {
         if (type == null) {
             return false;

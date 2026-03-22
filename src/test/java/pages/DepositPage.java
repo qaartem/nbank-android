@@ -4,8 +4,6 @@ import com.codeborne.selenide.Condition;
 import io.appium.java_client.MobileBy;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.Selenide;
 
@@ -13,8 +11,6 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 public class DepositPage {
-    private static final Logger log = LoggerFactory.getLogger(DepositPage.class);
-
     private static final String ACCOUNT_ID_INPUT = "//android.widget.EditText[@text='Account ID']";
     private static final String ACCOUNT_NUMBER_INPUT = "//android.widget.EditText[@text='Account Number']";
     private static final String AMOUNT_INPUT = "//android.widget.EditText[@text='Amount']";
@@ -53,7 +49,6 @@ public class DepositPage {
 
     @Step("Deposit {amount} to account id={accountId}, number={accountNumber}")
     public DepositPage depositMoney(Long accountId, String accountNumber, float amount) {
-        log.debug("Deposit: accountId={}, accountNumber={}, amount={}", accountId, accountNumber, amount);
         enterAccountId(accountId != null ? String.valueOf(accountId) : "");
         enterAccountNumber(accountNumber);
         enterAmount(amount);
@@ -68,7 +63,7 @@ public class DepositPage {
     }
 
     @Step("Return to dashboard")
-    public pages.UserDashboardPage returnToDashboard() {
+    public UserDashboardPage returnToDashboard() {
         Selenide.back();
         return new UserDashboardPage();
     }

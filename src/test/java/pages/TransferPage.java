@@ -4,15 +4,11 @@ import com.codeborne.selenide.Condition;
 import io.appium.java_client.MobileBy;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 public class TransferPage {
-    private static final Logger log = LoggerFactory.getLogger(TransferPage.class);
-
     private static final String TITLE = "//android.widget.TextView[contains(@text, 'Make a Transfer')]";
     private static final String SENDER_ACCOUNT_SPINNER = "//*[contains(@resource-id, 'android:id/text1')]";
     private static final String SPINNER_OPTION_IN_LIST = "//android.widget.CheckedTextView[@text='%s']";
@@ -77,13 +73,11 @@ public class TransferPage {
 
     @Step("Perform transfer: sender={senderAccountNumber} (ID: {senderAccountId}), receiverId={receiverAccountId}, amount={amount}")
     public TransferPage performTransfer(String senderAccountNumber, Long senderAccountId, String receiverAccountId, float amount, String recipientName) {
-        log.debug("Transfer: from {} (ID: {}) to {} amount {}", senderAccountNumber, senderAccountId, receiverAccountId, amount);
         checkTransferScreenLoaded();
         selectSenderAccount(senderAccountNumber, senderAccountId);
         if (recipientName != null && !recipientName.isEmpty()) {
             enterRecipientName(recipientName);
         }
-        checkTransferScreenLoaded();
         enterReceiverAccountId(receiverAccountId);
         enterAmount(amount);
         confirmDetails();
