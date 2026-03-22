@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * API может отдавать {@code transactions} в любом порядке. Для проверок «последняя операция»
- * приводим список к единому порядку: сначала самые новые (по {@code id}, как у типичного автоинкремента в БД).
- */
 public final class TransactionListHelper {
 
     private TransactionListHelper() {

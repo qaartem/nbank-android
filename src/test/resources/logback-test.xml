@@ -7,15 +7,10 @@
         </encoder>
     </appender>
 
-    <logger name="helpers" level="DEBUG"/>
-    <logger name="tests" level="DEBUG"/>
-    <logger name="pages" level="DEBUG"/>
-    <logger name="driver" level="DEBUG"/>
+    <logger name="extensions" level="INFO"/>
 
-    <!-- Every request/response to the backend (method, URI, headers, body, status, response body) -->
     <logger name="backend" level="INFO"/>
 
-    <!-- Selenide / RestAssured: reduce noise unless debugging -->
     <logger name="com.codeborne.selenide" level="INFO"/>
     <logger name="io.restassured" level="INFO"/>
 
