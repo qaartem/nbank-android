@@ -2,6 +2,7 @@ package tests;
 
 import static io.qameta.allure.Allure.step;
 
+import annotations.WithTestLogging;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.logevents.SelenideLogger;
@@ -19,6 +20,7 @@ import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@WithTestLogging
 public class BaseTest {
     private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
     private static final String START_EMULATOR_SCRIPT_NAME = "start-emulator.sh";
