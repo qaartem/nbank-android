@@ -39,11 +39,13 @@ public final class DepositVerificationHelper {
                 .as("Transactions list should not be empty after deposit")
                 .isNotEmpty();
 
-        Transaction lastTransaction = accountDetails.getTransactions().get(0);
+        List<Transaction> newestFirst = TransactionListHelper.newestFirst(accountDetails.getTransactions());
+        Transaction lastTransaction = newestFirst.get(0);
         assertThat(lastTransaction.getType())
+                .as("Newest transaction (by id) should be the deposit just made")
                 .isEqualTo(TransactionType.DEPOSIT.toString());
         assertThat(lastTransaction.getAmount())
-                .as("Last transaction amount should equal deposit amount")
+                .as("Newest transaction amount should equal deposit amount")
                 .isEqualTo(depositAmount);
 
         float expectedBalance = (initialBalance != null ? initialBalance : 0f) + depositAmount;

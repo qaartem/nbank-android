@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,10 +46,42 @@ public final class TransferVerificationHelper {
         assertThat(senderAccount.getTransactions())
                 .as("Sender should have at least one transaction after transfer")
                 .isNotEmpty();
-        Transaction lastSenderTransaction = senderAccount.getTransactions().get(0);
-        assertThat(lastSenderTransaction.getType()).isEqualTo(TransactionType.TRANSFER_OUT.toString());
-        assertThat(lastSenderTransaction.getAmount()).isNotNull();
-        assertThat(lastSenderTransaction.getAmount().floatValue()).isEqualTo(transferAmount);
+
+        List<Transaction> senderNewestFirst = TransactionListHelper.newestFirst(senderAccount.getTransactions());
+        assertThat(senderNewestFirst)
+                .as("Sender transactions after sort should not be empty")
+                .isNotEmpty();
+        Transaction newestSenderTx = senderNewestFirst.get(0);
+        assertThat(isOutgoingTransferType(newestSenderTx.getType()))
+                .as("Newest sender transaction (by id) should be outgoing transfer; was type=%s, full list=%s",
+                        newestSenderTx.getType(), senderNewestFirst)
+                .isTrue();
+        assertThat(newestSenderTx.getAmount())
+                .as("Newest sender transaction should have amount")
+                .isNotNull();
+        assertThat(amountMatches(newestSenderTx.getAmount(), transferAmount))
+                .as("Newest sender transaction amount should equal transfer amount")
+                .isTrue();
+        log.debug("Newest sender transaction: type={}, amount={}, id={}", newestSenderTx.getType(),
+                newestSenderTx.getAmount(), newestSenderTx.getId());
+
+        List<Transaction> receiverNewestFirst = TransactionListHelper.newestFirst(receiverAccount.getTransactions());
+        assertThat(receiverNewestFirst)
+                .as("Receiver should have at least one transaction after transfer")
+                .isNotEmpty();
+        Transaction newestReceiverTx = receiverNewestFirst.get(0);
+        assertThat(isIncomingTransferType(newestReceiverTx.getType()))
+                .as("Newest receiver transaction (by id) should be incoming transfer; was type=%s, full list=%s",
+                        newestReceiverTx.getType(), receiverNewestFirst)
+                .isTrue();
+        assertThat(newestReceiverTx.getAmount())
+                .as("Newest receiver transaction should have amount")
+                .isNotNull();
+        assertThat(amountMatches(newestReceiverTx.getAmount(), transferAmount))
+                .as("Newest receiver transaction amount should equal transfer amount")
+                .isTrue();
+        log.debug("Newest receiver transaction: type={}, amount={}, id={}", newestReceiverTx.getType(),
+                newestReceiverTx.getAmount(), newestReceiverTx.getId());
 
         log.info("Transfer verification passed: senderBalance={}, receiverBalance={}",
                 senderAccount.getBalance(), receiverAccount.getBalance());
@@ -59,5 +92,29 @@ public final class TransferVerificationHelper {
                 .filter(a -> accountNumber.equals(a.getAccountNumber()))
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("Account not found: " + accountNumber));
+    }
+
+    private static boolean isOutgoingTransferType(String type) {
+        if (type == null) {
+            return false;
+        }
+        return Objects.equals(type, TransactionType.TRANSFER.toString())
+                || Objects.equals(type, TransactionType.TRANSFER_OUT.toString());
+    }
+
+    /**
+     * На стороне получателя backend может отдавать TRANSFER, TRANSFER_IN или (редко) DEPOSIT для зачисления.
+     */
+    private static boolean isIncomingTransferType(String type) {
+        if (type == null) {
+            return false;
+        }
+        return Objects.equals(type, TransactionType.TRANSFER.toString())
+                || Objects.equals(type, "TRANSFER_IN")
+                || Objects.equals(type, TransactionType.DEPOSIT.toString());
+    }
+
+    private static boolean amountMatches(Number apiAmount, float expected) {
+        return Math.abs(apiAmount.doubleValue() - expected) < 0.0001d;
     }
 }
