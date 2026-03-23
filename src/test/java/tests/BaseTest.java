@@ -2,6 +2,7 @@ package tests;
 
 import static io.qameta.allure.Allure.step;
 
+import annotations.WithTestLogging;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.logevents.SelenideLogger;
@@ -17,6 +18,7 @@ import helpers.ScriptHelper;
 import io.qameta.allure.selenide.AllureSelenide;
 import models.User;
 
+@WithTestLogging
 public class BaseTest {
     private static final String START_EMULATOR_SCRIPT_NAME = "start-emulator.sh";
     private static final String STOP_EMULATOR_SCRIPT_NAME = "stop-emulator.sh";
@@ -26,6 +28,7 @@ public class BaseTest {
 
     @BeforeAll
     public static void setup() {
+        helpers.BackendLogging.install();
         ApiHelper.healthCheck();
 
         ScriptHelper.putEnvVariable(ANDROID_HOME, Config.getProperty("android.home"));

@@ -4,13 +4,9 @@ import models.CreateUserRequest;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * Генерация тестовых данных (как RandomModelGenerator в веб-проекте).
- */
 public class TestDataGenerator {
 
     private static final String ALPHANUMERIC = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    /** Пароль по правилу: 3 заглавные + 4 строчные + 3 цифры + 2 спецсимвола */
     private static final String PASSWORD_SPEC = "$%&";
 
     public static CreateUserRequest randomCreateUserRequest() {

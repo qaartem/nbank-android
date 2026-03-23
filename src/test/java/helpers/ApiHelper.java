@@ -7,6 +7,7 @@ import config.Config;
 import io.restassured.RestAssured;
 
 public class ApiHelper {
+
     public static void healthCheck() {
         step("Check API health before start testing", () -> {
             RestAssured.given()
@@ -16,6 +17,7 @@ public class ApiHelper {
                     .when()
                     .get("/api/v1/admin/users")
                     .then()
+                    .log().ifValidationFails()
                     .assertThat().statusCode(HttpStatus.SC_OK);
         });
     }
