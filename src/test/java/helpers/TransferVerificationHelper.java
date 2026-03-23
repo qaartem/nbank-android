@@ -94,8 +94,7 @@ public final class TransferVerificationHelper {
             return false;
         }
         return Objects.equals(type, TransactionType.TRANSFER.toString())
-                || Objects.equals(type, "TRANSFER_IN")
-                || Objects.equals(type, TransactionType.DEPOSIT.toString());
+                || Objects.equals(type, "TRANSFER_IN");
     }
 
     private static boolean amountMatches(Number apiAmount, float expected) {
