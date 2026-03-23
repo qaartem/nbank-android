@@ -14,6 +14,7 @@ public class TransferTestData {
     private String senderPassword;
     private Long senderAccountId;
     private String senderAccountNumber;
+    private Float senderInitialBalance;
 
     private String receiverUsername;
     private String receiverPassword;
