@@ -35,6 +35,7 @@ public final class TransferApiSetupHelper {
                 .receiverPassword(receiverRequest.getPassword())
                 .receiverAccountId(receiverAccount.getId())
                 .receiverAccountNumber(receiverAccount.getAccountNumber())
+                .receiverInitialBalance(receiverAccount.getBalance() != null ? receiverAccount.getBalance() : 0f)
                 .build();
     }
 }

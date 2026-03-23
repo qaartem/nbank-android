@@ -19,6 +19,7 @@ public class TransferTest extends BaseTest {
     void userCanTransferMoney() {
         TransferTestData testData = step("Create two users and two accounts via API", TransferApiSetupHelper::prepareTransferTestData);
         float senderPreTransferBalance = (testData.getSenderInitialBalance() != null ? testData.getSenderInitialBalance() : 0f) + DEPOSIT_AMOUNT;
+        float receiverPreTransferBalance = testData.getReceiverInitialBalance() != null ? testData.getReceiverInitialBalance() : 0f;
 
         step("Login, deposit money via UI, then make transfer via UI", () -> {
             new LoginPage()
@@ -49,6 +50,7 @@ public class TransferTest extends BaseTest {
                         testData.getReceiverPassword(),
                         testData.getReceiverAccountNumber(),
                         senderPreTransferBalance,
+                        receiverPreTransferBalance,
                         TRANSFER_AMOUNT
                 )
         );

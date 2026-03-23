@@ -22,6 +22,7 @@ public final class TransferVerificationHelper {
             String receiverPassword,
             String receiverAccountNumber,
             float initialSenderBalance,
+            float initialReceiverBalance,
             float transferAmount
     ) {
         List<GetAccountDetailsResponse> senderAccounts = AccountApiHelper.getCustomerAccounts(senderUsername, senderPassword);
@@ -33,9 +34,10 @@ public final class TransferVerificationHelper {
 
         List<GetAccountDetailsResponse> receiverAccounts = AccountApiHelper.getCustomerAccounts(receiverUsername, receiverPassword);
         GetAccountDetailsResponse receiverAccount = findAccount(receiverAccounts, receiverAccountNumber);
+        float expectedReceiverBalance = initialReceiverBalance + transferAmount;
         assertThat(receiverAccount.getBalance())
-                .as("Receiver balance should equal transfer amount")
-                .isEqualTo(transferAmount);
+                .as("Receiver balance should be initial + transfer amount")
+                .isEqualTo(expectedReceiverBalance);
 
         assertThat(senderAccount.getTransactions())
                 .as("Sender should have at least one transaction after transfer")
