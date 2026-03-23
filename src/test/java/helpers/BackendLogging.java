@@ -10,12 +10,20 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 
 public final class BackendLogging {
 
     public static final String BACKEND_LOGGER_NAME = "backend";
 
     private static final Logger log = LoggerFactory.getLogger(BACKEND_LOGGER_NAME);
+    private static final String REDACTED = "<REDACTED>";
+    private static final Pattern AUTHORIZATION_HEADER_PATTERN =
+            Pattern.compile("(?i)(Authorization\\s*[:=]\\s*Basic\\s+)[A-Za-z0-9+/=._-]+");
+    private static final Pattern JSON_PASSWORD_PATTERN =
+            Pattern.compile("(?i)(\"password\"\\s*:\\s*\")[^\"]*(\")");
+    private static final Pattern FORM_PASSWORD_PATTERN =
+            Pattern.compile("(?i)(password\\s*[=:]\\s*)[^\\s&,]+");
 
     private BackendLogging() {
     }
@@ -35,7 +43,7 @@ public final class BackendLogging {
 
             private void flushLine() {
                 if (line.length() > 0) {
-                    log.info("{}", line.toString());
+                    log.info("{}", sanitizeSensitiveData(line.toString()));
                     line.setLength(0);
                 }
             }
@@ -51,5 +59,12 @@ public final class BackendLogging {
                 new ResponseLoggingFilter(LogDetail.ALL, true, printStream)
         );
         log.info("Backend request/response logging enabled (logger: {})", BACKEND_LOGGER_NAME);
+    }
+
+    private static String sanitizeSensitiveData(String value) {
+        String sanitized = AUTHORIZATION_HEADER_PATTERN.matcher(value).replaceAll("$1" + REDACTED);
+        sanitized = JSON_PASSWORD_PATTERN.matcher(sanitized).replaceAll("$1" + REDACTED + "$2");
+        sanitized = FORM_PASSWORD_PATTERN.matcher(sanitized).replaceAll("$1" + REDACTED);
+        return sanitized;
     }
 }
